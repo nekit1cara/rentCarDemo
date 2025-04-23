@@ -1,7 +1,7 @@
 package com.crm.rentcar.Entity.Vehicle;
 
 import com.crm.rentcar.Entity.Orders.OrderItems;
-import com.crm.rentcar.Enums.CarStatus;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

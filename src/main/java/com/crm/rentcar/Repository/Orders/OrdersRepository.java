@@ -1,6 +1,5 @@
 package com.crm.rentcar.Repository.Orders;
 
-import com.crm.rentcar.Entity.Orders.OrderItems;
 import com.crm.rentcar.Entity.Orders.Orders;
 import com.crm.rentcar.Entity.Vehicle.Cars;
 import com.crm.rentcar.Enums.OrderStatus;

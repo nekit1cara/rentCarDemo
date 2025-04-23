@@ -26,7 +26,6 @@ public class ClientInfo {
 
     private String clientPhone;
 
-    @Column(nullable = true)
     private Integer drivingExperience;
 
     @JsonIgnore
