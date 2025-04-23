@@ -3,7 +3,7 @@ package com.crm.rentcar.Controller.admin.Cars;
 import com.crm.rentcar.Entity.Vehicle.Cars;
 import com.crm.rentcar.Enums.CarStatus;
 import com.crm.rentcar.Enums.CarType;
-import com.crm.rentcar.Service.admin.interfaces.CarsService;
+import com.crm.rentcar.Service.interfaces.CarsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

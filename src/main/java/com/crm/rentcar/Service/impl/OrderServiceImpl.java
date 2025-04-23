@@ -1,4 +1,4 @@
-package com.crm.rentcar.Service.admin.impl;
+package com.crm.rentcar.Service.impl;
 
 import com.crm.rentcar.Entity.Clients.ClientInfo;
 import com.crm.rentcar.Entity.Clients.Clients;
@@ -16,7 +16,7 @@ import com.crm.rentcar.Repository.Clients.ClientInfoRepository;
 import com.crm.rentcar.Repository.Clients.ClientsRepository;
 import com.crm.rentcar.Repository.Orders.OrderItemsRepository;
 import com.crm.rentcar.Repository.Orders.OrdersRepository;
-import com.crm.rentcar.Service.admin.interfaces.OrdersService;
+import com.crm.rentcar.Service.interfaces.OrdersService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

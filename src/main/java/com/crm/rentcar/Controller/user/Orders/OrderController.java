@@ -2,7 +2,7 @@ package com.crm.rentcar.Controller.user.Orders;
 
 import com.crm.rentcar.Entity.Orders.Orders;
 import com.crm.rentcar.Enums.OrderStatus;
-import com.crm.rentcar.Service.admin.interfaces.OrdersService;
+import com.crm.rentcar.Service.interfaces.OrdersService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
