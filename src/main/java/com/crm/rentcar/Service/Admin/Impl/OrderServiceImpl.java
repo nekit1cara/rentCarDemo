@@ -142,13 +142,14 @@ public class OrderServiceImpl implements OrdersService {
 
         String sessionId = session.getId();
 
-        Optional<Orders> existingOrder = ordersRepository.findByIdAndSessionId(orderId,sessionId);
+        Optional<Orders> existingOrder = ordersRepository.findByIdAndSessionId(orderId, sessionId);
 
             if (existingOrder.isEmpty()) {
                 throw new CustomNotFoundException("Заказ : " + orderId + " не найден.");
             }
 
         Orders orderToUpdate = existingOrder.get();
+        OrderItems newOrderItems = order.getOrderItems();
 
             if (order.getOrderStartDate() != null) {
                 orderToUpdate.setOrderStartDate(order.getOrderStartDate());
@@ -162,22 +163,23 @@ public class OrderServiceImpl implements OrdersService {
             if (order.getOrderTotalPrice() != null) {
                 orderToUpdate.setOrderTotalPrice(order.getOrderTotalPrice());
             }
-            if (order.getOrderItems() != null) {
-                orderToUpdate.setOrderItems(order.getOrderItems());
 
-                if (order.getOrderItems().getCars() != null) {
-                    orderToUpdate.getOrderItems().setCars(order.getOrderItems().getCars());
-                    carsRepository.save(orderToUpdate.getOrderItems().getCars());
+            if (newOrderItems != null) {
+                // Сохраняем машины/клиентов, если это новые сущности (без id)
+                if (newOrderItems.getCars() != null && newOrderItems.getCars().getId() == null) {
+                    carsRepository.save(newOrderItems.getCars());
                 }
-                if (order.getOrderItems().getClients() != null) {
-                    orderToUpdate.getOrderItems().setClients(order.getOrderItems().getClients());
-                    clientsRepository.save(orderToUpdate.getOrderItems().getClients());
+                if (newOrderItems.getClients() != null && newOrderItems.getClients().getId() == null) {
+                    clientsRepository.save(newOrderItems.getClients());
                 }
 
+                newOrderItems.setOrder(orderToUpdate); // связь обратная
+                orderItemsRepository.save(newOrderItems); // сохраняем до добавления в заказ
+                orderToUpdate.setOrderItems(newOrderItems);
             }
 
         ordersRepository.save(orderToUpdate);
-            return ResponseEntity.status(HttpStatus.OK).body("Заказ : " + orderId + " успешно изменен.");
+        return ResponseEntity.status(HttpStatus.OK).body("Заказ : " + orderId + " успешно изменен.");
     }
 
     @Override
@@ -186,13 +188,22 @@ public class OrderServiceImpl implements OrdersService {
 
         Orders order = getOrder(session, orderId);
         OrderItems orderItems = order.getOrderItems();
+
+
         Clients clients = order.getOrderItems().getClients();
 
+            if (clients != null) {
+                orderItems.setClients(null);
 
-        clientsRepository.delete(clients);
-            order.getOrderItems().setClients(null);
+                if (clients.getOrderItems().isEmpty()) {
+                    clientsRepository.delete(clients);
+                }
 
-            order.getOrderItems().setCars(null);
+            }
+
+            if (order.getOrderItems().getCars() != null) {
+                orderItems.setCars(null);
+            }
 
         orderItemsRepository.delete(orderItems);
             order.setOrderItems(null);
