@@ -1,9 +1,9 @@
-package com.crm.rentcar.Controller.admin.Cars;
+package com.crm.rentcar.Controller.Admin.Cars;
 
 import com.crm.rentcar.Entity.Vehicle.Cars;
 import com.crm.rentcar.Enums.CarStatus;
 import com.crm.rentcar.Enums.CarType;
-import com.crm.rentcar.Service.interfaces.CarsService;
+import com.crm.rentcar.Service.Admin.Interfaces.CarsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

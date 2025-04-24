@@ -1,4 +1,4 @@
-package com.crm.rentcar.Service.interfaces;
+package com.crm.rentcar.Service.Admin.Interfaces;
 
 import com.crm.rentcar.Entity.Vehicle.Cars;
 import com.crm.rentcar.Enums.CarStatus;

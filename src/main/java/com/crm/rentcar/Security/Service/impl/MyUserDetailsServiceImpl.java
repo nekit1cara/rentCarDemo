@@ -17,12 +17,11 @@ public class MyUserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private AdminPermitRepository adminPermitRepository;
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
         Optional<AdminPermit> adminPermit = adminPermitRepository.findByAdminUsername(username);
         return adminPermit.map(MyUserDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("Admin " + username + " not found"));
     }
-
 }

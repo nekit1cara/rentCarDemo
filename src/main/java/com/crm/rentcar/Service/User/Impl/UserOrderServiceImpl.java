@@ -1,5 +1,6 @@
-package com.crm.rentcar.Service.impl;
+package com.crm.rentcar.Service.User.Impl;
 
+import com.crm.rentcar.DTO.OrdersDTO.OrdersDTO;
 import com.crm.rentcar.Entity.Clients.ClientInfo;
 import com.crm.rentcar.Entity.Clients.Clients;
 import com.crm.rentcar.Entity.Orders.OrderItems;
@@ -16,7 +17,7 @@ import com.crm.rentcar.Repository.Clients.ClientInfoRepository;
 import com.crm.rentcar.Repository.Clients.ClientsRepository;
 import com.crm.rentcar.Repository.Orders.OrderItemsRepository;
 import com.crm.rentcar.Repository.Orders.OrdersRepository;
-import com.crm.rentcar.Service.interfaces.OrdersService;
+import com.crm.rentcar.Service.User.Interfaces.UserOrdersService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,13 +27,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class OrderServiceImpl implements OrdersService {
+public class UserOrderServiceImpl implements UserOrdersService {
 
     private final OrdersRepository ordersRepository;
     private final OrderItemsRepository orderItemsRepository;
@@ -41,10 +43,10 @@ public class OrderServiceImpl implements OrdersService {
     private final ClientInfoRepository clientInfoRepository;
 
     @Autowired
-    public OrderServiceImpl(OrdersRepository ordersRepository,
-                            OrderItemsRepository orderItemsRepository,
-                            ClientsRepository clientsRepository,
-                            CarsRepository carsRepository, ClientInfoRepository clientInfoRepository) {
+    public UserOrderServiceImpl(OrdersRepository ordersRepository,
+                                OrderItemsRepository orderItemsRepository,
+                                ClientsRepository clientsRepository,
+                                CarsRepository carsRepository, ClientInfoRepository clientInfoRepository) {
         this.ordersRepository = ordersRepository;
         this.orderItemsRepository = orderItemsRepository;
         this.clientsRepository = clientsRepository;
@@ -54,12 +56,12 @@ public class OrderServiceImpl implements OrdersService {
 
 
     @Override
-    public Page<Orders> getAllOrders(HttpSession session, int page, int size) {
+    public Page<OrdersDTO> getAllOrders(HttpSession session, int page, int size) {
        return getOrders(session,page,size);
     }
 
     @Override
-    public Orders getOrderById(HttpSession session, Long orderId) {
+    public OrdersDTO getOrderById(HttpSession session, Long orderId) {
         return getOrder(session, orderId);
     }
 
@@ -74,7 +76,8 @@ public class OrderServiceImpl implements OrdersService {
                 throw new CustomNotFoundException("Заказов с таким статусом : " + status.name() + " не найдено.");
             }
 
-        return ResponseEntity.status(HttpStatus.OK).body(allStatusOrders);
+        Page<OrdersDTO> ordersDTO = allStatusOrders.map(OrdersDTO::fromEntity);
+            return ResponseEntity.status(HttpStatus.OK).body(ordersDTO);
     }
 
     @Override
@@ -132,7 +135,9 @@ public class OrderServiceImpl implements OrdersService {
             order.setOrderTotalPrice(totalPrice);
 
         ordersRepository.save(order);
-        return ResponseEntity.status(HttpStatus.CREATED).body(order);
+
+        OrdersDTO ordersDTO = OrdersDTO.fromEntity(order);
+            return ResponseEntity.status(HttpStatus.CREATED).body(ordersDTO);
     }
 
 
@@ -174,27 +179,37 @@ public class OrderServiceImpl implements OrdersService {
     @Transactional
     public ResponseEntity<?> deleteOrderById(HttpSession session, Long orderId) {
 
-        Orders order = getOrder(session, orderId);
-        OrderItems orderItems = order.getOrderItems();
-        Clients clients = order.getOrderItems().getClients();
+        String sessionId = session.getId();
+        Optional<Orders> foundedOrder = ordersRepository.findByIdAndSessionId(orderId,sessionId);
+
+
+        if (foundedOrder.isEmpty()) {
+            throw new CustomNotFoundException("Заказ : " + orderId + " не найден.");
+        }
+
+        Orders orderToDelete = foundedOrder.get();
+
+        OrderItems orderItems = orderToDelete.getOrderItems();
+        Clients clients = orderToDelete.getOrderItems().getClients();
 
 
         clientsRepository.delete(clients);
-            order.getOrderItems().setClients(null);
+            orderToDelete.getOrderItems().setClients(null);
 
-            order.getOrderItems().setCars(null);
+            orderToDelete.getOrderItems().setCars(null);
 
         orderItemsRepository.delete(orderItems);
-            order.setOrderItems(null);
+            orderToDelete.setOrderItems(null);
 
-        ordersRepository.delete(order);
-            return ResponseEntity.status(HttpStatus.OK).body("Заказ : " + order.getId() + " успешно удален.");
+        ordersRepository.delete(orderToDelete);
+            return ResponseEntity.status(HttpStatus.OK).body("Заказ : " + orderToDelete.getId() + " успешно удален.");
     }
 
 
-///////////////////////////////////////////////////////////////////        PRIVATE METHODS     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////////////        PRIVATE METHODS     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-private Orders getOrder(HttpSession session, Long orderId) {
+private OrdersDTO getOrder(HttpSession session, Long orderId) {
+
         String sessionId = session.getId();
 
         Optional<Orders> foundedOrder = ordersRepository.findByIdAndSessionId(orderId,sessionId);
@@ -202,21 +217,23 @@ private Orders getOrder(HttpSession session, Long orderId) {
             if (foundedOrder.isEmpty()) {
                 throw new CustomNotFoundException("Заказ : " + orderId + " не найден.");
             } else {
-                return foundedOrder.get();
+                return OrdersDTO.fromEntity(foundedOrder.get());
             }
 }
 
-private Page<Orders> getOrders(HttpSession session, int page, int size) {
+private Page<OrdersDTO> getOrders(HttpSession session, int page, int size) {
 
     String sessionId = session.getId();
 
     Pageable pageable = PageRequest.of(page, size);
         Page<Orders> ordersList = ordersRepository.findBySessionId(sessionId, pageable);
 
+        Page<OrdersDTO> ordersDTOList = ordersList.map(OrdersDTO::fromEntity);
+
         if (ordersList.isEmpty()) {
             throw new CustomNotFoundException("Заказы не найдены.");
         } else {
-            return ordersList;
+            return ordersDTOList;
         }
 }
 

@@ -1,4 +1,4 @@
-package com.crm.rentcar.Service.impl;
+package com.crm.rentcar.Service.Admin.Impl;
 
 import com.crm.rentcar.Entity.Vehicle.CarInfo;
 import com.crm.rentcar.Entity.Vehicle.CarPrice;
@@ -11,7 +11,7 @@ import com.crm.rentcar.Exceptions.GlobalExceptions.CustomNotFoundException;
 import com.crm.rentcar.Repository.Cars.CarInfoRepository;
 import com.crm.rentcar.Repository.Cars.CarPriceRepository;
 import com.crm.rentcar.Repository.Cars.CarsRepository;
-import com.crm.rentcar.Service.interfaces.CarsService;
+import com.crm.rentcar.Service.Admin.Interfaces.CarsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -1,7 +1,7 @@
-package com.crm.rentcar.Controller.admin.Clients;
+package com.crm.rentcar.Controller.Admin.Clients;
 
 import com.crm.rentcar.Entity.Clients.Clients;
-import com.crm.rentcar.Service.interfaces.ClientsService;
+import com.crm.rentcar.Service.Admin.Interfaces.ClientsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
