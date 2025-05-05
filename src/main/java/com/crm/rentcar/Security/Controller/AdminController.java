@@ -37,4 +37,10 @@ public class AdminController {
         return adminPermitService.addAdmin(admin);
     }
 
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> deleteAdmin(@RequestParam String username) {
+        return adminPermitService.deleteAdminByUsername(username);
+    }
+
 }

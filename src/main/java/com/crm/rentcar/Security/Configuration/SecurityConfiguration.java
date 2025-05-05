@@ -35,8 +35,7 @@ public class SecurityConfiguration {
                             "/api/cars/type",
                             "/api/cars/brand",
                             "/error",
-                            "/login"
-                    )
+                            "/login")
                         .permitAll()
                     .anyRequest()
                         .fullyAuthenticated())

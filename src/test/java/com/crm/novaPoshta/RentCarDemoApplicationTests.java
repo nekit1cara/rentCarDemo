@@ -1,13 +1,11 @@
 package com.crm.novaPoshta;
 
-import org.junit.jupiter.api.Test;
+import com.crm.rentcar.RentCarDemoApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class RentCarDemoApplicationTests {
+@SpringBootTest(classes = RentCarDemoApplication.class)
+public class RentCarDemoApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+
 
 }

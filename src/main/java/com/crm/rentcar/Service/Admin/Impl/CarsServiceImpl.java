@@ -225,22 +225,23 @@ private CarPrice createNewCarPrices(Cars car) {
             throw new CustomCarPriceException("Цена автомобиля не может быть меньше или равно 0");
         }
 
+    carPrice.setId(car.getId());
     carPriceRepository.save(carPrice);
     return carPrice;
 }
 
 private CarInfo createNewCarInfo(Cars car, CarPrice carPrice) {
     CarInfo carInfo = new CarInfo();
-    carInfo.setCarStatus(CarStatus.AVAILABLE);
-    carInfo.setCarType(car.getInfo().getCarType());
-    carInfo.setCarBrand(car.getInfo().getCarBrand());
-    carInfo.setCarModel(car.getInfo().getCarModel());
-    carInfo.setCarYear(car.getInfo().getCarYear());
-    carInfo.setCarEngine(car.getInfo().getCarEngine());
-    carInfo.setCarSeats(car.getInfo().getCarSeats());
-    carInfo.setCarTransmissionType(car.getInfo().getCarTransmissionType());
-    carInfo.setPrice(carPrice);
-
+        carInfo.setCarStatus(CarStatus.AVAILABLE);
+        carInfo.setCarType(car.getInfo().getCarType());
+        carInfo.setCarBrand(car.getInfo().getCarBrand());
+        carInfo.setCarModel(car.getInfo().getCarModel());
+        carInfo.setCarYear(car.getInfo().getCarYear());
+        carInfo.setCarEngine(car.getInfo().getCarEngine());
+        carInfo.setCarSeats(car.getInfo().getCarSeats());
+        carInfo.setCarTransmissionType(car.getInfo().getCarTransmissionType());
+        carInfo.setPrice(carPrice);
+        carInfo.setId(car.getId());
     carInfoRepository.save(carInfo);
     return carInfo;
 }

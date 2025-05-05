@@ -1,0 +1,36 @@
+version: '3.8'
+
+volumes:
+  mysql_db:
+
+services:
+  mysql_db:
+    image: mysql
+    container_name: rentcar_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: rentcar
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_db:/var/lib/mysql
+
+  app:
+    container_name: rentcar_backed
+    restart: always
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql_db
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql_db:3306/rentcar"
+
+
+#Для запуска докера с бд команда - docker-compose up -d
+#Для остановки работ контейнеров команда - docker-compose down
+
+#Для сборки новый именджей с изменениями нужно сначала остановить старые командой - docker-compose down ,
+  #  Внести изменения в проекте и ввести команду - docker-compose build ,
+  # а после заново запустить - docker-compose up -d

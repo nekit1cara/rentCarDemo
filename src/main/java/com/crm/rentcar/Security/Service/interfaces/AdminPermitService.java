@@ -11,4 +11,6 @@ public interface AdminPermitService {
 
     ResponseEntity<?> addAdmin(AdminPermit admin);
 
+    ResponseEntity<?> deleteAdminByUsername(String username);
+
 }

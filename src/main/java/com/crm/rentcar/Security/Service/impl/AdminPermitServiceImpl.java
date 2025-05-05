@@ -61,4 +61,19 @@ public class AdminPermitServiceImpl implements AdminPermitService {
         adminPermitRepository.save(admin);
             return ResponseEntity.status(HttpStatus.CREATED).body(admin);
     }
+
+    @Override
+    public ResponseEntity<?> deleteAdminByUsername(String username) {
+
+        Optional<AdminPermit> adminToFind = adminPermitRepository.findByAdminUsername(username);
+
+            if (adminToFind.isEmpty()) {
+                throw new CustomNotFoundException("Admin : " + username + " does not exist");
+            }
+
+        AdminPermit adminToDelete = adminToFind.get();
+            adminPermitRepository.delete(adminToDelete);
+        return ResponseEntity.status(HttpStatus.OK).body("Admin deleted successfully.");
+
+    }
 }
